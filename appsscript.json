@@ -1,6 +1,11 @@
 {
   "timeZone": "Asia/Tokyo",
   "dependencies": {
+    "enabledAdvancedServices": [{
+      "userSymbol": "Slides",
+      "serviceId": "slides",
+      "version": "v1"
+    }]
   },
   "exceptionLogging": "STACKDRIVER"
 }

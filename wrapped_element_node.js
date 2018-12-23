@@ -6,7 +6,7 @@ var WrappedElementNode = function(symbol) {
 
 WrappedElementNode.prototype.parse = function(context) {
   context.skipToken(this.symbol);
-  let str = '';
+  const str = '';
 
   while (context.currentToken() !== this.symbol) {
     str += context.currentToken();

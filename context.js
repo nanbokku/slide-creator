@@ -40,6 +40,39 @@ Context.prototype.joinRemains = function() {
 };
 
 function main() {
-  var context = new Context('aaa');
-  Logger.log(context.nextToken());
+  var presentation = Slides.Presentations.get('1Fa37fPDWLtzfDF39ls8eIcqT4kULR7ICbcL4rJR65fI');
+  
+  var properties = Slides.newPageElementProperties();
+  var dimention = Slides.newDimension();
+  var size = Slides.newSize();
+  var transform = Slides.newAffineTransform();
+  transform.scaleX = 1.0;
+  transform.scaleY = 1.0;
+  transform.translateX = 100;
+  transform.translateY = 100;
+  transform.unit = 'EMU';
+  dimention.magnitude = 8000000;
+  dimention.unit = 'EMU';
+  size.width = dimention;
+  dimention.magnitude = 2000000;
+  size.height = dimention;
+  properties.pageObjectId = presentation.slides[0].objectId;
+  properties.size = size;
+  properties.transform = transform;
+  
+  var request = Slides.newRequest();
+  request.createShape = {"elementProperties": properties, "shapeType": 'TEXT_BOX'};
+
+  var body = Slides.newBatchUpdatePresentationRequest();
+  body.requests = new Array();
+  body.requests.push(request);
+  
+  var response = Slides.Presentations.batchUpdate(body, presentation.presentationId);
+  Logger.log(response);
+  
+  var request2 = Slides.newRequest();
+  request2.insertText = {"objectId": response.replies[0].createShape.objectId, "text": "testtest", "insertionIndex": 0};
+  Logger.log(request2);
+  body.requests.push(request2);
+  Slides.Presentations.batchUpdate(body, presentation.presentationId);
 }

@@ -5,7 +5,7 @@ var InlineElementNode = function() {
 
 InlineElementNode.prototype.parse = function(context) {
   const current = context.currentToken();
-  let symbol = null;
+  var symbol = null;
   if ((symbol = this.isWrappedElement(current, context))) {
     // wrapped element
     this.node = new WrappedElementNode(symbol);
@@ -27,7 +27,7 @@ InlineElementNode.prototype.isWrappedElement = function(text, context) {
   // search same symbol in context
   const symbol = new RegExp(result[0], 'g');
   const symbolList = symbol.exec(context.joinRemains());
-  const same = symbolList.filter(str => {
+  const same = symbolList.filter(function(str) {
     return str === result[0];
   });
   if (same.length < 2) {

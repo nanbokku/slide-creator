@@ -11,14 +11,14 @@ LineNode.prototype.parse = function(context) {
       break;
     } else if (this.isBlockElement(current)) {
       // block element
-      const node = new BlockElementNode();
-      node.parse(context);
-      this.nodeList.push(node);
+      const block = new BlockElementNode();
+      block.parse(context);
+      this.nodeList.push(block);
     } else {
       // inline element
-      const node = new InlineElementNode();
-      node.parse(context);
-      this.nodeList.push(node);
+      const inline = new InlineElementNode();
+      inline.parse(context);
+      this.nodeList.push(inline);
     }
   }
 };

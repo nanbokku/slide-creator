@@ -1,5 +1,5 @@
 <Line> ::= <BlockElement> <end> | <InlineElement>* <end>
-<BlockElement> ::= <Symbol> " " <InlineElement>
+<BlockElement> ::= <Symbol> <InlineElement>
 <InlineElement> ::= <WrappedElement> | <literal>
 <WrappedElement> ::= <Symbol> <literal> <Symbol> | <Symbol> <WrappedElement> <Symbol>
 <Symbol> ::= "# " | "## " | "### " | "*" | "* " | "1. " | "`"
