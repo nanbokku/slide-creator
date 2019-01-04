@@ -19,25 +19,3 @@ BlockElementNode.prototype.parse = function(context) {
   // 箇条書き(1. or * )
   // 見出し(# or ## or ### or...)
 };
-
-BlockElementNode.prototype.CreateShape = function() {
-  const json = {
-    "objectId": this.objectId,
-    "elementProperties": {
-      "pageObjectId": '',
-      "size": {
-        "width": {
-          "magnitude": 0,
-          "unit": Unit.EMU 
-        },
-        "height": {
-          "magnitude": 0,
-          "unit": Unit.EMU
-        }
-      },
-      "transform": {
-        
-      }
-    }
-  }
-}

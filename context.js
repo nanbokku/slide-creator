@@ -42,37 +42,30 @@ Context.prototype.joinRemains = function() {
 function main() {
   var presentation = Slides.Presentations.get('1Fa37fPDWLtzfDF39ls8eIcqT4kULR7ICbcL4rJR65fI');
   
-  var properties = Slides.newPageElementProperties();
-  var dimention = Slides.newDimension();
-  var size = Slides.newSize();
-  var transform = Slides.newAffineTransform();
-  transform.scaleX = 1.0;
-  transform.scaleY = 1.0;
-  transform.translateX = 100;
-  transform.translateY = 100;
-  transform.unit = 'EMU';
-  dimention.magnitude = 8000000;
-  dimention.unit = 'EMU';
-  size.width = dimention;
-  dimention.magnitude = 2000000;
-  size.height = dimention;
-  properties.pageObjectId = presentation.slides[0].objectId;
-  properties.size = size;
-  properties.transform = transform;
-  
+  var slideId = 'SLIDE_';
   var request = Slides.newRequest();
-  request.createShape = {"elementProperties": properties, "shapeType": 'TEXT_BOX'};
-
+  request3.createSlide = {"objectId": (slideId + 0), "insertionIndex": 0, "slideLayoutReference": {
+    "predefinedLayout": 'TITLE_AND_BODY'
+  }};
+  
   var body = Slides.newBatchUpdatePresentationRequest();
   body.requests = new Array();
   body.requests.push(request);
   
-  var response = Slides.Presentations.batchUpdate(body, presentation.presentationId);
-  Logger.log(response);
+  var res = Slides.Presentations.batchUpdate(body, presentation.presentationId);
+  Logger.log(res.replies[0].createSlide.objectId);
+  
+  var info = Slides.Presentations.Pages.get(presentation.presentationId, slideId + 0);
+  Logger.log(info);
+  var bodyEl = info.pageElements.filter(function(element) {
+    return element.shape.placeholder.type === 'BODY';
+  });
+  
+  Logger.log(bodyEl);
   
   var request2 = Slides.newRequest();
-  request2.insertText = {"objectId": response.replies[0].createShape.objectId, "text": "testtest", "insertionIndex": 0};
-  Logger.log(request2);
+  request2.insertText = {"objectId": bodyEl[0].objectId, "text": "testtest", "insertionIndex": 0};
   body.requests.push(request2);
+  
   Slides.Presentations.batchUpdate(body, presentation.presentationId);
 }
