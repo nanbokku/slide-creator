@@ -1,26 +1,32 @@
 // <Line> ::= <BlockElement> <end> | <InlineElement>* <end>
-var LineNode = function() {
+var LineNode = function(slideIndex) {
+  this.slideIndex = slideIndex;
   this.nodeList = [];
+  this.requests = [];
 };
 
 LineNode.prototype.parse = function(context) {
   const current = context.currentToken();
+
   while (true) {
     if (current === null) {
       // end
-      break;
+      return this.requests;
     } else if (this.isBlockElement(current)) {
       // block element
-      const block = new BlockElementNode();
-      block.parse(context);
-      this.nodeList.push(block);
+      const block = new BlockElementNode(this.slideIndex);
+      const reqs = block.getRequests(context);
+      this.requests = this.requests.concat(reqs);
+      //this.nodeList.push(block);
     } else {
       // inline element
-      const inline = new InlineElementNode();
-      inline.parse(context);
-      this.nodeList.push(inline);
+      const inline = new InlineElementNode(this.slideIndex);
+      inline.getRequests(context);
+      //this.nodeList.push(inline);
     }
   }
+  
+  return this.body;
 };
 
 LineNode.prototype.isBlockElement = function(text) {

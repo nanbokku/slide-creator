@@ -1,11 +1,9 @@
-var HeaderElementNode = function() {
+var HeaderElementNode = function(slideIndex) {
   this.literal = '';
-  this.size = 10;
-  this.objectId = '';
-  this.slideIndex;
+  this.slideIndex = slieIndex;
 };
 
-HeaderElementNode.prototype.parse = function(context) {
+HeaderElementNode.prototype.getRequests = function(context) {
   const symbol = context.currentToken();
   const count = counter(symbol);
 
@@ -14,10 +12,9 @@ HeaderElementNode.prototype.parse = function(context) {
 
   switch (count) {
     case 1:
-      // set character size
-      break;
+      return [this.getRequest('TITLE')];
     case 2:
-      break;
+      return [this.getRequest('TITLE_AND_BODY')];
   }
 };
 
@@ -25,19 +22,63 @@ HeaderElementNode.prototype.counter = function(symbol) {
   return symbol.split('#').length - 1;
 };
 
-HeaderElementNode.prototype.getRequest = function() {
-  const slideId = "SLIDE_";
-  
+HeaderElementNode.prototype.createSlide = function(layout) {
+  const slideId = 'SLIDE_';
+
   const request = Slides.newRequest();
-  request.createSlide = {
-    "objectId": slideId + this.slideIndex,
-    "insertionIndex": this.slideIndex,
-    "slideLayoutReference": {"predefinedLayout": 'TITLE'}
+  if (layout === 'TITLE_AND_BODY') {
+    request.createSlide = {
+      objectId: slideId + this.slideIndex,
+      insertionIndex: this.slideIndex,
+      slideLayoutReference: {
+        predefinedLayout: 'TITLE_AND_BODY'
+      },
+      placeholderIdMappings: [
+        {
+          objectId: slideId + this.slideIndex + 'BODY',
+          layoutPlaceholder: {
+            type: 'BODY',
+            index: 0
+          }
+        },
+        {
+          objectId: slideId + this.slideIndex + 'TITLE',
+          layoutPlaceholder: {
+            type: 'TITLE',
+            index: 0
+          }
+        }
+      ]
+    };
+  } else if (layout === 'TITLE') {
+    request.createSlide = {
+      objectId: slideId + this.slideIndex,
+      insertionIndex: this.slideIndex,
+      slideLayoutReference: {
+        predefinedLayout: 'TITLE'
+      },
+      placeholderIdMappings: [
+        {
+          objectId: slideId + this.slideIndex + 'TITLE',
+          layoutPlaceholder: {
+            type: 'TITLE',
+            index: 0
+          }
+        }
+      ]
+    };
+  }
+
+  return request;
 };
 
-  const style = Slides.newTextStyle(Slides.newSize({"magnitude": this.size, "unit": 'EMU'}));
-  const range = Slides.newRange({"type": 'ALL'});
-  //const request = Slides.newRequest().updateTextStyle({"objectId": this.objectId, "style": style, "textRange": range, "fields": "textSize"});
+HeaderElementNode.prototype.getRequest = function(layout) {
+  const request = this.createSlide(layout);
+  request.insertText = {
+    objectId: slideId + this.slideIndex + 'TITLE',
+    text: this.literal,
+    insertionIndex: 0
+  };
 
   return request;
 };

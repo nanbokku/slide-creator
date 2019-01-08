@@ -1,15 +1,17 @@
 // <BlockElement> ::= <Symbol> <InlineElement>
-var BlockElementNode = function() {
+var BlockElementNode = function(slideIndex) {
   this.node = null;
-  this.objectId = '';
+  this.slideIndex = slideIndex;
 };
 
-BlockElementNode.prototype.parse = function(context) {
+BlockElementNode.prototype.getRequests = function(context) {
   const symbol = context.currentToken();
   if (/^#+\s/.test(symbol)) {
     // header
-    this.node = new HeaderElementNode();
-    this.node.parse(context);
+    this.slideIndex++;
+    // TODO: slideIndexの更新を通知する
+    this.node = new HeaderElementNode(this.slideIndex);
+    return this.node.getRequests(context);
   } else if (/^\d\.\s/.test(symbol)) {
     // ordered list
   } else if (/^\*+\s/.test(symbol)) {
