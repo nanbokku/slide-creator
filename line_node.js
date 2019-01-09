@@ -11,23 +11,34 @@ LineNode.prototype.parse = function(context) {
   while (true) {
     if (current === null) {
       // end
-      return this.requests;
+      break;
     } else if (this.isBlockElement(current)) {
       // block element
       const block = new BlockElementNode(this.slideIndex);
-      const reqs = block.getRequests(context);
-      this.requests = this.requests.concat(reqs);
-      //this.nodeList.push(block);
+      this.slideIndex = block.parse(context);
+      //const reqs = block.getRequests(context);
+      //this.requests = this.requests.concat(reqs);
+      this.nodeList.push(block);
     } else {
       // inline element
       const inline = new InlineElementNode(this.slideIndex);
-      inline.getRequests(context);
-      //this.nodeList.push(inline);
+      inline.parse(context);
+      //inline.getRequests(context);
+      this.nodeList.push(inline);
     }
   }
   
-  return this.body;
+  return this.slideIndex;
 };
+
+LineNode.prototype.getRequests = function() {
+  var reqs = [];
+  this.nodeList.forEach(function(node) {
+    reqs.concat(node.getRequests());
+  });
+  
+  return reqs;
+}
 
 LineNode.prototype.isBlockElement = function(text) {
   const reg = /^#+\s|^\d\.\s|^\*\s/;
